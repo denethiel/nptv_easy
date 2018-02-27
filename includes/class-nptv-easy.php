@@ -73,7 +73,6 @@ class Nptv_Easy {
 
     public function nptv_easy_options_page(){
 
-        echo "Estoy en el constructor del menu";
 
         if(!current_user_can($this->capability)){
             wp_die('No tienes suficientes provilegios para editar esta pagiba - NPTV Easy');
@@ -87,7 +86,54 @@ class Nptv_Easy {
     }
 
     public function enqueue_scripts($hook_page){
-        echo $hook_page;
+        if('toplevel_page_nptv-easy' !== $hook_page){
+            return;
+        }
+        // echo NPTV_DIR;
+        // echo NPTV_URL;
+        $script_handle = NPTV_SLUG . '-main';
+        wp_enqueue_script( 
+            $script_handle,
+            NPTV_URL . '/build/app.js',
+            array( ),
+            NPTV_VERSION, 
+            true 
+        );
+
+        wp_enqueue_style( 
+            $script_handle . 'style',
+            NPTV_URL . '/theme/index.css', array( ), NPTV_VERSION, 'all' );
+
+        $data = array(
+            // 'strings'      => array(
+            //     'no_events'    => _x( '(none)', 'no event to show', 'wp-cron-pixie' ),
+            //     'due'          => _x( 'due', 'label for when cron event date', 'wp-cron-pixie' ),
+            //     'now'          => _x( 'now', 'cron event is due now', 'wp-cron-pixie' ),
+            //     'passed'       => _x( 'passed', 'cron event is over due', 'wp-cron-pixie' ),
+            //     'weeks_abrv'   => _x( 'w', 'displayed in interval', 'wp-cron-pixie' ),
+            //     'days_abrv'    => _x( 'd', 'displayed in interval', 'wp-cron-pixie' ),
+            //     'hours_abrv'   => _x( 'h', 'displayed in interval', 'wp-cron-pixie' ),
+            //     'minutes_abrv' => _x( 'm', 'displayed in interval', 'wp-cron-pixie' ),
+            //     'seconds_abrv' => _x( 's', 'displayed in interval', 'wp-cron-pixie' ),
+            //     'run_now'      => _x( 'Run event now.', 'Title for run now icon', 'wp-cron-pixie' ),
+            // ),
+            'nonce'        => wp_create_nonce( 'nptv-easy' ),
+            'timer_period' => 5, // How often should display be updated, in seconds.
+            'data'         => array(
+                'categories' => $this->_get_categories(),
+            ),
+        );
+        wp_localize_script( $script_handle, 'NPTV', $data );
+    }
+
+    public function _get_categories(){
+        $categories_obj = get_categories();
+        $categories = array();
+
+        foreach($categories_obj as $pn_cat){
+            $categories[$pn_cat->catID] = $pn_cat->cat_name;
+        }
+        return $categories;
     }
 }
 

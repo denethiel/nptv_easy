@@ -10,6 +10,10 @@ var exportPath = path.resolve(__dirname, './build');
 var plugins = [];
 var env = process.env.WEBPACK_ENV;
 
+function resolve(dir){
+    return path.join(__dirname, '..', dir)
+}
+
 
 //Differ settings based on production flags
 if(env == 'production'){
@@ -74,7 +78,7 @@ module.exports = {
     },
     resolve:{
         alias:{
-            'vue$':'vue/dist/vue.esm.js'
+            'vue$':'vue/dist/vue.esm.js',
         },
         extensions:['*','.js','.vue','.json']
     },
