@@ -135,6 +135,8 @@ class Nptv_Easy {
         }
         return $categories;
     }
+
+    
 }
 
 new Nptv_Easy();
