@@ -7,12 +7,27 @@ import App from './App.vue'
 import router from './router'
 
 Vue.use(ElementUI, {locale})
+Vue.use(require( 'vue-resource'));
+Vue.http.options.emulateJSON = true;
+Vue.http.options.emulateHTTP = true;
+
+Vue.mixin({
+	computed:{
+		nonce: function(){
+			return NPTV.nonce;
+		},
+		resource:function(){
+			return this.$resource('/wp-admin/admin-ajax.php');
+		}
+	}
+})
 
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
 new Vue({
   el: '#nptv-easy-main',
+  data: NPTV.data,
   router,
   components: { App },
   template: '<App/>'

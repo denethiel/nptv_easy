@@ -7,6 +7,8 @@ class Nptv_Easy {
 
     private $capability = 'manage_options' ;
 
+    private $func;
+
     public function __construct(){
         
         // if(empty($plugin_meta)){
@@ -30,6 +32,10 @@ class Nptv_Easy {
 
     function init(){
 
+        include(NPTV_DIR . '/includes/nptv-functions.php');
+
+        this->$func = new nptv_functions();
+
 
 
         // Agregar pagina del Plugin dentro del Setup
@@ -40,8 +46,19 @@ class Nptv_Easy {
 
         //Agrega el JS Script
         add_action('admin_enqueue_scripts', array( $this, 'enqueue_scripts'));
+
+
+        add_action('wp_ajax_nptv_add_post', array($this,'ajax_add_post'));
     }
 
+    public function ajax_add_post(){
+        $external_url = $_POST['external_url'];
+        $category_id = $_POST['category_id'];
+        $tag_name = $_POST['tag_name'];
+
+        $nptv_nota = $this->func->agregar_noticia($external_url, $category_id, $tag_name);
+        $this->_ajax_return($nptv_nota);
+    }
 
     
 
@@ -71,6 +88,11 @@ class Nptv_Easy {
         // );
     }
 
+    private function _ajax_return( $response = true ){
+        echo json_encode( $response );
+        exit;
+    }
+
     public function nptv_easy_options_page(){
 
 
@@ -86,6 +108,16 @@ class Nptv_Easy {
     }
 
     public function enqueue_scripts($hook_page){
+        if($hook_page == 'jetpack_page_stats'){
+            wp_enqueue_script(
+                'nptv-stats-script',
+                NPTV_URL . '/js/nptv-stats.js',
+                array(),
+                NPTV_VERSION,
+                true
+            );
+        }
+
         if('toplevel_page_nptv-easy' !== $hook_page){
             return;
         }
