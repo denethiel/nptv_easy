@@ -34,8 +34,10 @@ function nptv_control_meta() {
 		'version' => '0.4',
 	);
 }
-
+#Functions and Widgets
 include(ROOT_PATH . '/includes/nptv-functions.php');
+
+///=====================================================///
 
 class NeoPoliticaTV_Control {
 
@@ -60,8 +62,31 @@ class NeoPoliticaTV_Control {
 
 		add_action('admin_enqueue_scripts', array( $this, 'enqueue_scripts'));
 
+        add_action('wp_ajax_nptv_add_new', array( $this, 'ajax_add_post'));
+
 
 	} //End Constructor
+
+    function ajax_add_post(){
+        $url = $_POST['url'];
+        $cat_id = $_POST['cat'];
+        $tags = $_POST['tags'];
+        // if(function_exists('agregar_noticia')){
+
+        //     $this->_ajax_return('SI existe la function');
+        // }else{
+        //     $this->_ajax_return('No existe la function');
+        // }
+        // //$this->_ajax_return($url);
+        $nptv_nota = agregar_noticia($url, $cat_id, $tags);
+        $this->_ajax_return($nptv_nota);
+
+    }
+
+    function _ajax_return( $response = true ){
+        wp_send_json(  $response );
+        exit;
+    }
 
 	function nptv_build_menu(){
 		add_menu_page( 
@@ -111,6 +136,9 @@ class NeoPoliticaTV_Control {
             true 
         );
 
+        wp_enqueue_script( 'NPTV-axios-js', 'https://unpkg.com/axios@0.16.2/dist/axios.min.js', array(), '0.16.2', true );
+        wp_enqueue_script( 'NPTV-qs-js', 'https://unpkg.com/qs@6.5.1/dist/qs.js', array(), '6.5.1', true );
+
         wp_enqueue_style( 
             $script_handle . 'style',
             plugins_url('/theme/index.css',__FILE__), array( ), $this->plugin_meta['version'], 'all' );
@@ -130,6 +158,7 @@ class NeoPoliticaTV_Control {
             // ),
             'nonce'        => wp_create_nonce( 'nptv-control' ),
             'timer_period' => 5, // How often should display be updated, in seconds.
+            'ajax_url'     => admin_url('admin-ajax.php'),
             'data'         => array(
                 'categories' => $this->_get_categories(),
             ),
@@ -143,9 +172,9 @@ class NeoPoliticaTV_Control {
         $categories = array();
 
         foreach($categories_obj as $pn_cat){
+
             $categories[$pn_cat->cat_ID] = $pn_cat->cat_name;
         }
-        var_dump($categories);
         return $categories;
 
     }

@@ -24,10 +24,12 @@
     "vue": "^2.5.13"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "babel-loader": "^7.1.2",
     "css-loader": "^0.28.10",
     "element-ui": "^2.2.0",
     "file-loader": "^1.1.9",
+    "qs": "^6.5.1",
     "uglifyjs-webpack-plugin": "^1.2.1",
     "vue-hot-reload-api": "^2.3.0",
     "vue-html-loader": "^1.2.4",

@@ -2,16 +2,16 @@
 
 
 	
-function _url_check( $url ){
+function url_check( $url ){
         $headers = @get_headers($url);
         return is_array($headers) ? preg_match('/^HTTP\\/\\d+\\.\\d+\\s+2\\d\\d\\s+.*$/',$headers[0]) : false;
     }
 
 function agregar_noticia($url, $cat_id, $tags){
     	global $options;
-    	if($this->_url_check($url)){
+    	if(url_check($url)){
     		//Diario del Istmo
-    		$dom = new DOMDOCument('1.0','UTF-8');
+    		$dom = new DOMDocument('1.0','UTF-8');
     		$internalErrors = libxml_use_internal_errors(true);
 			$dom->validateOnParse = true;
 			$dom->loadHTML(file_get_contents($url));
