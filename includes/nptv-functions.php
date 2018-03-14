@@ -1,14 +1,13 @@
 <?php 
-class nptv_functions {
+
 
 	
-
-    private function _url_check( $url ){
+function _url_check( $url ){
         $headers = @get_headers($url);
         return is_array($headers) ? preg_match('/^HTTP\\/\\d+\\.\\d+\\s+2\\d\\d\\s+.*$/',$headers[0]) : false;
     }
 
-    public function agregar_noticia($url, $cat_id, $tags){
+function agregar_noticia($url, $cat_id, $tags){
     	global $options;
     	if($this->_url_check($url)){
     		//Diario del Istmo
@@ -39,8 +38,7 @@ class nptv_functions {
 				}catch(Exception $e){
 					$nptv_nota = array(
 						'error' => true,
-						'message' => $e->getMessage()
-					)
+						'message' => $e->getMessage());
 				}
 			}elseif(strpos($url, 'xeu')){
 				try{
@@ -58,7 +56,7 @@ class nptv_functions {
 					$imagen = $imagen_node[0]->getAttribute('src');
 					if( is_string($titulo) && is_string($imagen) && is_string($text)){
 						$nptv_nota = array(
-							'error' => false
+							'error' => false,
 							'titulo' => $titulo,
 							'imagen' => $imagen,
 							'texto'  => $text,
@@ -70,7 +68,7 @@ class nptv_functions {
 				}catch(Exception $e){
 					$nptv_nota = array(
 						'error' => true,
-						'message' => $e->getMessage())
+						'message' => $e->getMessage());
 				}
 			}
 			if(!$nptv_nota['error']){
@@ -118,5 +116,5 @@ class nptv_functions {
     	}
     }
 
-}
+
  ?>

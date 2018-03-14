@@ -8,8 +8,7 @@
           </el-form-item>
           <el-form-item label="Categoria">
             <el-select v-model="form.cat" placeholder="Selecciona una categoria">
-              <el-option label="Local" value="local"></el-option>
-              <el-option label="Nacional" value="nacional"></el-option>
+              <el-option v-for="item in categories" :label="key" :value="item"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="Etiquetas(separadas por ,)">
@@ -39,7 +38,8 @@ export default {
         url:'',
         cat:'',
         tags:''
-      }
+      },
+      categories:NPTV.data.categories
     }
   },
   methods:{

@@ -34,7 +34,7 @@ class Nptv_Easy {
 
         include(NPTV_DIR . '/includes/nptv-functions.php');
 
-        this->$func = new nptv_functions();
+        //this->$func = new nptv_functions();
 
 
 

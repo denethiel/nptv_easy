@@ -38,6 +38,7 @@ module.exports = {
         path: exportPath,
         filename: appName
     },
+    devtool:'cheap-eval-source-map',
     module:{
         rules:[
             {

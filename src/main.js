@@ -7,9 +7,6 @@ import App from './App.vue'
 import router from './router'
 
 Vue.use(ElementUI, {locale})
-Vue.use(require( 'vue-resource'));
-Vue.http.options.emulateJSON = true;
-Vue.http.options.emulateHTTP = true;
 
 Vue.mixin({
 	computed:{

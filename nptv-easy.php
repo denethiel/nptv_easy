@@ -24,42 +24,174 @@ if ( ! defined( 'WPINC' ) ) {
 
 include_once(ABSPATH . 'wp-includes/pluggable.php');
 
-class NeoPoliticaTV_Easy 
-{
-	// private plugin_meta = array(
-	// 	'slug'    => 'nptv-easy',
-	// 	'name'    => 'NPTV Easy',
-	// 	'file'    => __FILE__,
-	// 	'version' => '0.3',
-	// )
+define ( 'ROOT_PATH', dirname(__FILE__) );
 
-	private static $instance;
+function nptv_control_meta() {
+	return array(
+		'slug' => 'neopolitica-control',
+		'name' => 'NPTV Control',
+		'file' => __FILE__,
+		'version' => '0.4',
+	);
+}
 
-	function __construct(){
-		define('NPTV_URL', plugins_url('', __FILE__));
-		define('NPTV_DIR', dirname(__FILE__));
-		define('NPTV_NAME', 'NPTV Easy');
-		define('NPTV_SLUG', 'nptv-easy');
-		define('NPTV_VERSION','0.3');
+include(ROOT_PATH . '/includes/nptv-functions.php');
 
-		include ( NPTV_DIR . '/includes/class-nptv-easy.php');
-	}
+class NeoPoliticaTV_Control {
 
-	public static function instance(){
-		if(! isset(self::$instance)){
-			self::$instance = new self;
+	private $plugin_meta;
+
+	private $capability = 'manage_options' ;
+
+	//Constructor
+	function __construct($plugin_meta = array()) {
+
+		if( empty( $plugin_meta )) {
+			return;
 		}
-		return self::$instance;
+
+		$this->plugin_meta = $plugin_meta;
+
+		if( !current_user_can( $this->capability )){
+			return;
+		}
+
+		add_action('admin_menu', array($this, 'nptv_build_menu'));
+
+		add_action('admin_enqueue_scripts', array( $this, 'enqueue_scripts'));
+
+
+	} //End Constructor
+
+	function nptv_build_menu(){
+		add_menu_page( 
+			$this->puglin_meta['name'],
+			$this->plugin_meta['name'],
+			$this->capability, 
+			$this->plugin_meta['slug'],
+			array($this,'nptv_render_page'),
+			plugins_url('/src/assets/logo_menu.jpg',__FILE__),
+			6 );
 	}
 
+	function nptv_render_page(){
+		if(!current_user_can($this->capability)){
+            wp_die('No tienes suficientes provilegios para editar esta pagiba - NPTV Easy');
+        }
+        ?>
+        <!-- Main content -->
+        <div id="nptv-easy-main">
+            
+        </div>
+        <?php
+	}
 
-}
+	function enqueue_scripts($hook_page){
+        if($hook_page == 'jetpack_page_stats'){
+            wp_enqueue_script(
+                'nptv-stats-script',
+                plugins_url('/js/nptv-stats.js',__FILE__),
+                array(),
+                $this->plugin_meta['version'],
+                true
+            );
+        }
 
-function NPTV() {
-	return NeoPoliticaTV_Easy::instance();
-}
+        if('toplevel_page_neopolitica-control' !== $hook_page){
+            return;
+        }
+        // echo NPTV_DIR;
+        // echo NPTV_URL;
+        $script_handle = $this->plugin_meta['slug'] . '-main';
+        wp_enqueue_script( 
+            $script_handle,
+            plugins_url( '/build/app.js', __FILE__),
+            array( ),
+            $this->plugin_meta['version'], 
+            true 
+        );
 
-$nptv_easy = NPTV();
+        wp_enqueue_style( 
+            $script_handle . 'style',
+            plugins_url('/theme/index.css',__FILE__), array( ), $this->plugin_meta['version'], 'all' );
+
+        $data = array(
+            // 'strings'      => array(
+            //     'no_events'    => _x( '(none)', 'no event to show', 'wp-cron-pixie' ),
+            //     'due'          => _x( 'due', 'label for when cron event date', 'wp-cron-pixie' ),
+            //     'now'          => _x( 'now', 'cron event is due now', 'wp-cron-pixie' ),
+            //     'passed'       => _x( 'passed', 'cron event is over due', 'wp-cron-pixie' ),
+            //     'weeks_abrv'   => _x( 'w', 'displayed in interval', 'wp-cron-pixie' ),
+            //     'days_abrv'    => _x( 'd', 'displayed in interval', 'wp-cron-pixie' ),
+            //     'hours_abrv'   => _x( 'h', 'displayed in interval', 'wp-cron-pixie' ),
+            //     'minutes_abrv' => _x( 'm', 'displayed in interval', 'wp-cron-pixie' ),
+            //     'seconds_abrv' => _x( 's', 'displayed in interval', 'wp-cron-pixie' ),
+            //     'run_now'      => _x( 'Run event now.', 'Title for run now icon', 'wp-cron-pixie' ),
+            // ),
+            'nonce'        => wp_create_nonce( 'nptv-control' ),
+            'timer_period' => 5, // How often should display be updated, in seconds.
+            'data'         => array(
+                'categories' => $this->_get_categories(),
+            ),
+        );
+        wp_localize_script( $script_handle, 'NPTV', $data );
+    }
+
+
+    private function _get_categories(){
+        $categories_obj = get_categories();
+        $categories = array();
+
+        foreach($categories_obj as $pn_cat){
+            $categories[$pn_cat->cat_ID] = $pn_cat->cat_name;
+        }
+        var_dump($categories);
+        return $categories;
+
+    }
+
+} // End Class
+
+
+
+//include_once(ABSPATH . 'wp-includes/pluggable.php');
+
+// class NeoPoliticaTV_Easy 
+// {
+// 	// private plugin_meta = array(
+// 	// 	'slug'    => 'nptv-easy',
+// 	// 	'name'    => 'NPTV Easy',
+// 	// 	'file'    => __FILE__,
+// 	// 	'version' => '0.3',
+// 	// )
+
+// 	private static $instance;
+
+// 	function __construct(){
+// 		define('NPTV_URL', plugins_url('', __FILE__));
+// 		define('NPTV_DIR', dirname(__FILE__));
+// 		define('NPTV_NAME', 'NPTV Easy');
+// 		define('NPTV_SLUG', 'nptv-easy');
+// 		define('NPTV_VERSION','0.3');
+
+// 		include ( NPTV_DIR . '/includes/class-nptv-easy.php');
+// 	}
+
+// 	public static function instance(){
+// 		if(! isset(self::$instance)){
+// 			self::$instance = new self;
+// 		}
+// 		return self::$instance;
+// 	}
+
+
+// }
+
+// function NPTV() {
+// 	return NeoPoliticaTV_Easy::instance();
+// }
+
+// $nptv_easy = NPTV();
 
 
 // // Donde la magia sucede...
@@ -79,4 +211,5 @@ $nptv_easy = NPTV();
 
 // add_action('admin_init','nptv_easy_admin_init');
 
+new NeoPoliticaTV_Control( nptv_control_meta() );
  ?>
