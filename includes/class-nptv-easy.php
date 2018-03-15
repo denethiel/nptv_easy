@@ -49,6 +49,13 @@ class Nptv_Easy {
 
 
         add_action('wp_ajax_nptv_add_post', array($this,'ajax_add_post'));
+
+        add_action('wp_ajax_nptv_return_urls', array($this, 'nptv_return_urls'));
+    }
+
+
+    public function nptv_return_urls() {
+        
     }
 
     public function ajax_add_post(){

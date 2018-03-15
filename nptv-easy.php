@@ -64,8 +64,15 @@ class NeoPoliticaTV_Control {
 
         add_action('wp_ajax_nptv_add_new', array( $this, 'ajax_add_post'));
 
+        add_action('wp_ajax_nptv_get_links', array($this, '_get_links'));
+
 
 	} //End Constructor
+
+    function _get_links() {
+        $links = nptv_get_links();
+        $this->_ajax_return($links);
+    }
 
     function ajax_add_post(){
         $url = $_POST['url'];

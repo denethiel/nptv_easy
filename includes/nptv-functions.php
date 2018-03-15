@@ -7,6 +7,17 @@ function url_check( $url ){
         return is_array($headers) ? preg_match('/^HTTP\\/\\d+\\.\\d+\\s+2\\d\\d\\s+.*$/',$headers[0]) : false;
     }
 
+function nptv_get_links(){
+	$dom = new DOMDocument('1.0','UTF-8');
+    $internalErrors = libxml_use_internal_errors(true);
+	$dom->validateOnParse = true;
+	$dom->loadHTML(file_get_contents('http://www.xeu.com.mx/internacional.cfm'));
+	libxml_use_internal_errors($internalErrors);
+	$raw_data = $dom->getElementsByTagName('titulo_nota');
+	return var_dump($raw_data);
+	//return $raw_data;
+}
+
 function agregar_noticia($url, $cat_id, $tags){
     	global $options;
     	if(url_check($url)){
