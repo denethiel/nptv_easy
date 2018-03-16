@@ -8,14 +8,17 @@ function url_check( $url ){
     }
 
 function nptv_get_links(){
+	$links = array();
 	$dom = new DOMDocument('1.0','UTF-8');
     $internalErrors = libxml_use_internal_errors(true);
 	$dom->validateOnParse = true;
 	$dom->loadHTML(file_get_contents('http://www.xeu.com.mx/internacional.cfm'));
 	libxml_use_internal_errors($internalErrors);
-	$raw_data = $dom->getElementsByTagName('titulo_nota');
-	return var_dump($raw_data);
-	//return $raw_data;
+	$xpath = new DOMXPath($dom);
+	$elements = $xpath->query("//span[@class='titulonota'");
+	
+	
+	return $elements;
 }
 
 function agregar_noticia($url, $cat_id, $tags){
