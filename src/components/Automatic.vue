@@ -1,8 +1,35 @@
 <template>
-	<div>
-		<h3>Soy el automatico wey</h3>
-		<el-button type="primary" @click="getLinks">Primary</el-button>
-	</div>
+	<el-row class="tac">
+		<el-col :span="5">
+			<el-menu
+				default-active="nacional"
+				class="el-menu-vertical"
+				@select="handleOpen"
+				@close="handleClose">
+				<el-menu-item index="nacional">
+					<i class="el-icon-sort"></i>
+					<span>Nacional</span>
+				</el-menu-item>
+				<el-menu-item index="internacional">
+					<i class="el-icon-sort"></i>
+					<span>Internacional</span>
+				</el-menu-item>
+				<el-menu-item index="estatal">
+					<i class="el-icon-sort"></i>
+					<span>Nacional</span>
+				</el-menu-item>
+				<el-menu-item index="ayuntamiento">
+					<i class="el-icon-sort"></i>
+					<span>Comunicados oficiales</span>
+				</el-menu-item>
+				<el-menu-item index="diariodelistmo">
+					<i class="el-icon-sort"></i>
+					<span>Diario del Istmo</span>
+				</el-menu-item>
+				
+			</el-menu>
+		</el-col>
+	</el-row>
 	
 </template>
 <script>
@@ -26,6 +53,12 @@
 		        .catch(function(error){
 		          console.log(error);
 		        })
+			},
+			handleOpen(key, keyPath){
+				console.log(key, keyPath);
+			},
+			handleClose(key, keyPath){
+				console.log(key, keyPath);
 			}
 		}
 	}

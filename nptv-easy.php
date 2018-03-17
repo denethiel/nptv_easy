@@ -70,9 +70,10 @@ class NeoPoliticaTV_Control {
 	} //End Constructor
 
     function _get_links() {
-        $links = nptv_get_links();
+        $links = $this->_nptv_get_links();
         $this->_ajax_return($links);
     }
+
 
     function ajax_add_post(){
         $url = $_POST['url'];

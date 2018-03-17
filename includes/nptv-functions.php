@@ -5,20 +5,24 @@
 function url_check( $url ){
         $headers = @get_headers($url);
         return is_array($headers) ? preg_match('/^HTTP\\/\\d+\\.\\d+\\s+2\\d\\d\\s+.*$/',$headers[0]) : false;
-    }
+}
 
-function nptv_get_links(){
-	$links = array();
-	$dom = new DOMDocument('1.0','UTF-8');
-    $internalErrors = libxml_use_internal_errors(true);
-	$dom->validateOnParse = true;
-	$dom->loadHTML(file_get_contents('http://www.xeu.com.mx/internacional.cfm'));
-	libxml_use_internal_errors($internalErrors);
-	$xpath = new DOMXPath($dom);
-	$elements = $xpath->query("//span[@class='titulonota'");
-	
-	
-	return $elements;
+function _nptv_get_links($url){
+	if(check_url($url)){
+ 		$links = array();
+		$dom = new DOMDocument('1.0','UTF-8');
+ 		$internalErrors = libxml_use_internal_errors(true);
+ 		$dom->validateOnParse = true;
+		$dom->loadHTML(file_get_contents($url));
+		libxml_use_internal_errors($internalErrors);
+		$xpath = new DOMXPath($dom);
+		$elements = $xpath->query("//span[@class='titulonota']");
+ 		foreach($elements as $element){
+       		$link = 'http://www.xeu.com.mx/' . $element->firstChild->getAttribute('href');
+       		$links[] = $link;
+  		}
+ 		return $links;
+ 	}
 }
 
 function agregar_noticia($url, $cat_id, $tags){
