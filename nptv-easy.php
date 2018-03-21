@@ -64,14 +64,28 @@ class NeoPoliticaTV_Control {
 
         add_action('wp_ajax_nptv_add_new', array( $this, 'ajax_add_post'));
 
-        add_action('wp_ajax_nptv_get_links', array($this, '_get_links'));
+        add_action('wp_ajax_nptv_get_list', array($this, '_get_list'));
 
 
 	} //End Constructor
 
-    function _get_links() {
-        $links = $this->_nptv_get_links();
-        $this->_ajax_return($links);
+    function _get_list() {
+        // $url = 'http://www.xeu.com.mx/nacional.cfm';
+        // $links = array();
+        // $dom = new DOMDocument('1.0','UTF-8');
+        // $internalErrors = libxml_use_internal_errors(true);
+        // $dom->validateOnParse = true;
+        // $dom->loadHTML(file_get_contents($url));
+        // libxml_use_internal_errors($internalErrors);
+        // $xpath = new DOMXPath($dom);
+        // $elements = $xpath->query("//span[@class='titulonota']");
+        // foreach($elements as $element){
+        //     $link = 'http://www.xeu.com.mx/' . $element->firstChild->getAttribute('href');
+        //     $links[] = $link;
+        // }
+        $cat = $_POST['cat'];
+        $news = get_news($cat);
+        $this->_ajax_return($news);
     }
 
 

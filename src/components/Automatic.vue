@@ -29,6 +29,10 @@
 				
 			</el-menu>
 		</el-col>
+		<el-col :span="18">
+				<h2>Noticias</h2>
+			  <el-button @click="getLinks">Default</el-button>
+		</el-col>
 	</el-row>
 	
 </template>
@@ -36,14 +40,18 @@
 	export default {
 		data(){
 			return{
-				raw: {}
+				raw: {},
+
 			}
 			
 		},
 		methods:{
-			getLinks(){
+			getList(key){
+				
+				console.log(this.key);
 				let data = {
-					'action':'nptv_get_links'
+					'action':'nptv_get_list',
+					'cat':'nacional'
 				}
 				axios.post(NPTV.ajax_url, Qs.stringify(data))
 		        .then(function(response){
@@ -55,6 +63,7 @@
 		        })
 			},
 			handleOpen(key, keyPath){
+				this.getList(key);
 				console.log(key, keyPath);
 			},
 			handleClose(key, keyPath){

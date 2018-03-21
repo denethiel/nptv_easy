@@ -7,8 +7,9 @@ function url_check( $url ){
         return is_array($headers) ? preg_match('/^HTTP\\/\\d+\\.\\d+\\s+2\\d\\d\\s+.*$/',$headers[0]) : false;
 }
 
-function _nptv_get_links($url){
-	if(check_url($url)){
+//Solo funciona con el dominio XEU
+function buscar_enlaces($url){
+
  		$links = array();
 		$dom = new DOMDocument('1.0','UTF-8');
  		$internalErrors = libxml_use_internal_errors(true);
@@ -19,10 +20,82 @@ function _nptv_get_links($url){
 		$elements = $xpath->query("//span[@class='titulonota']");
  		foreach($elements as $element){
        		$link = 'http://www.xeu.com.mx/' . $element->firstChild->getAttribute('href');
-       		$links[] = $link;
+       		array_push($links, $link);
   		}
  		return $links;
- 	}
+ 	
+}
+
+function get_news($cat = 'nacional'){
+
+	//Deberia ser siempre nacional si no se manda la categoria.
+	$noticias = array();
+	$url = '';
+	switch ($cat) {
+		case 'nacional':
+			$url = 'http://www.xeu.com.mx/nacional.cfm';
+			break;
+		case 'estatal':
+			$url = 'http://www.xeu.com.mx/estado.cfm';
+			break;
+
+		case 'internacional':
+			$url = 'http://www.xeu.com.mx/internacional.cfm';
+			break;
+		
+		default:
+			# code...
+			break;
+
+	}
+	$list_of_urls = buscar_enlaces($url);
+	foreach ($list_of_urls as $new_url) {
+		$noticias[] = _get_news_data($new_url);
+	}
+
+	return $noticias;
+
+}
+
+function _get_news_data($url){
+		$dom = new DOMDocument('1.0','UTF-8');
+    	$internalErrors = libxml_use_internal_errors(true);
+		$dom->validateOnParse = true;
+		$dom->loadHTML(file_get_contents($url));
+		libxml_use_internal_errors($internalErrors);
+		if(strpos($url, 'xeu')){
+				try{
+					$xpath = new DOMXPath($dom);
+					$titulo_node = $xpath->query("//div[@class='fgtitulo']");
+					//var_dump($titulo_node);
+
+					$titulo = utf8_decode($titulo_node[0]->nodeValue);
+
+					$text_node = $xpath->query("//div[@class='fatrece']");
+					$text = $text_node[0]->textContent;
+					//var_dump($text_node);
+
+					$imagen_node = $xpath->query("//img[@class='imgpadding']");
+					$imagen = $imagen_node[0]->getAttribute('src');
+					if( is_string($titulo) && is_string($imagen) && is_string($text)){
+						$nptv_nota = array(
+							'error' => false,
+							'titulo' => $titulo,
+							'imagen' => $imagen,
+							'texto'  => $text,
+							'error' => false,
+						);
+					}else{
+						throw new Exception('Error al parsear la web');
+					}
+				}catch(Exception $e){
+					$nptv_nota = array(
+						'error' => true,
+						'message' => $e->getMessage());
+				}
+			}
+		return $nptv_nota;
+	
 }
 
 function agregar_noticia($url, $cat_id, $tags){
