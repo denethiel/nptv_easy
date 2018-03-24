@@ -63,7 +63,6 @@ export default {
           console.log(response)
           this.loading = false;
           this.news = response.data;
-          this.form
         }.bind(this))
         .catch(function(error){
           console.log(error);

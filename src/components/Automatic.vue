@@ -16,7 +16,7 @@
 				</el-menu-item>
 				<el-menu-item index="estatal">
 					<i class="el-icon-sort"></i>
-					<span>Nacional</span>
+					<span>Estatal</span>
 				</el-menu-item>
 				<el-menu-item index="ayuntamiento">
 					<i class="el-icon-sort"></i>
@@ -30,24 +30,31 @@
 			</el-menu>
 		</el-col>
 		<el-col :span="18">
-				<h2>Noticias</h2>
-			  <el-button @click="getLinks">Default</el-button>
+				<data-table :news="news"></data-table>
 		</el-col>
 	</el-row>
 	
 </template>
 <script>
+	import DataTable from './automatic/DataTable.vue'
 	export default {
 		data(){
 			return{
-				raw: {},
+				news:[],
 
 			}
 			
 		},
+		// computed:{
+		// 	arrayNews:function(){
+		// 		var result = Object.keys(this.news).map(function(key){
+		// 			return [Number(key), this.news[key]];
+		// 		})
+		// 		return result;
+		// 	}
+		// },
 		methods:{
 			getList(key){
-				
 				console.log(this.key);
 				let data = {
 					'action':'nptv_get_list',
@@ -56,7 +63,7 @@
 				axios.post(NPTV.ajax_url, Qs.stringify(data))
 		        .then(function(response){
 		          console.log(response)
-		          this.raw = response.data
+		          this.news = response.data
 		        }.bind(this))
 		        .catch(function(error){
 		          console.log(error);
@@ -69,6 +76,12 @@
 			handleClose(key, keyPath){
 				console.log(key, keyPath);
 			}
+		},
+		components:{
+			DataTable
+		},
+		ready:function(){
+			this.getList('nacional');
 		}
 	}
 </script>
