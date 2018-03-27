@@ -30,7 +30,7 @@
 			</el-menu>
 		</el-col>
 		<el-col :span="18">
-				<data-table :news="news"></data-table>
+				<data-table :news="news" :loading="loading"></data-table>
 		</el-col>
 	</el-row>
 	
@@ -41,6 +41,7 @@
 		data(){
 			return{
 				news:[],
+				loading:true
 
 			}
 			
@@ -55,18 +56,20 @@
 		// },
 		methods:{
 			getList(key){
-				console.log(this.key);
+				this.loading = true;
 				let data = {
 					'action':'nptv_get_list',
-					'cat':'nacional'
+					'cat':key
 				}
 				axios.post(NPTV.ajax_url, Qs.stringify(data))
 		        .then(function(response){
 		          console.log(response)
 		          this.news = response.data
+		          this.loading = false;
 		        }.bind(this))
 		        .catch(function(error){
 		          console.log(error);
+		          this.loading = false;
 		        })
 			},
 			handleOpen(key, keyPath){
@@ -80,7 +83,7 @@
 		components:{
 			DataTable
 		},
-		ready:function(){
+		created:function(){
 			this.getList('nacional');
 		}
 	}

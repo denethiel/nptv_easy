@@ -147,6 +147,10 @@ class NeoPoliticaTV_Control {
         if('toplevel_page_neopolitica-control' !== $hook_page){
             return;
         }
+
+        wp_enqueue_script( 'NPTV-axios-js', 'https://unpkg.com/axios@0.16.2/dist/axios.min.js', array(), '0.16.2', true );
+        wp_enqueue_script( 'NPTV-qs-js', 'https://unpkg.com/qs@6.5.1/dist/qs.js', array(), '6.5.1', true );
+        
         // echo NPTV_DIR;
         // echo NPTV_URL;
         $script_handle = $this->plugin_meta['slug'] . '-main';
@@ -158,8 +162,7 @@ class NeoPoliticaTV_Control {
             true 
         );
 
-        wp_enqueue_script( 'NPTV-axios-js', 'https://unpkg.com/axios@0.16.2/dist/axios.min.js', array(), '0.16.2', true );
-        wp_enqueue_script( 'NPTV-qs-js', 'https://unpkg.com/qs@6.5.1/dist/qs.js', array(), '6.5.1', true );
+        
 
         wp_enqueue_style( 
             $script_handle . 'style',

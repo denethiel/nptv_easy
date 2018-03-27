@@ -26,7 +26,7 @@ function buscar_enlaces($url){
  	
 }
 
-function get_news($cat = 'nacional'){
+function get_news($cat){
 
 	//Deberia ser siempre nacional si no se manda la categoria.
 	$noticias = array();
@@ -77,7 +77,15 @@ function _get_news_data($url){
 
 					$imagen_node = $xpath->query("//img[@class='imgpadding']");
 					$imagen = $imagen_node[0]->getAttribute('src');
+					
 					if( is_string($titulo) && is_string($imagen) && is_string($text)){
+						// WP_Query arguments
+						$args = array(
+							's'                      => $titulo,
+						);
+
+						// The Query
+						$query = new WP_Query( $args );
 						$nptv_nota = array(
 							'error' => false,
 							'titulo' => $titulo,
@@ -85,6 +93,18 @@ function _get_news_data($url){
 							'texto'  => $text,
 							'error' => false,
 						);
+
+						// The Loop
+						if ( $query->have_posts() ) {
+							$nptv_nota += ['publish' => true];
+						} else {
+							// no posts found
+							$nptv_nota += ['publish' => false];
+						}
+
+						// Restore original Post Data
+						wp_reset_postdata();
+						
 					}else{
 						throw new Exception('Error al parsear la web');
 					}

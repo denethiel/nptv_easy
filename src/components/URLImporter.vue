@@ -7,7 +7,7 @@
             <el-input v-model="form.url"></el-input>
           </el-form-item>
           <el-form-item label="Categoria">
-            <el-select v-model="form.cat" placeholder="Selecciona una categoria">
+            <el-select v-model="form.cat" clearable placeholder="Selecciona una categoria">
               <el-option v-for="(item, key, index) in categories" :label="item" :value="key"></el-option>
             </el-select>
           </el-form-item>
@@ -27,9 +27,9 @@
         <el-card>
           <img :src="news.imagen" class="image">
           <div style="padding: 14px;">
-            <h3>{{news.titulo}}</h3>
+            <h3>{{news.titulo }}</h3>
             <div class="bottom clearfix">
-             {{news.texto}} 
+             {{news.texto }} 
             </div>
           </div>
         </el-card>
