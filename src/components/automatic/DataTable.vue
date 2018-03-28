@@ -19,6 +19,16 @@
 				{{scope.row.texto}}
 			</template>
 		</el-table-column>
+		<el-table-column label="Status" width="120">
+			<template slot-scope="scope">
+				<div v-if="scope.row.publish">
+					<el-tag type="success">Publicado</el-tag>
+				</div>
+				<div v-else>
+					<el-tag type="danger">Sin publicar</el-tag>
+				</div>
+			</template>
+		</el-table-column>
 	</el-table>
 </template>
 <script>
@@ -26,10 +36,11 @@
 	export default {
 		data(){
 			return{
-				multipleSelection:[]
+				multipleSelection:[],
+				loading2: true
 			}
 		},
-		props:['news','loading'],
+		props:['news','loading','overload'],
 		methods: {
 			handleSelectionChange(val){
 				this.multipleSelection = val;

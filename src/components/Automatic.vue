@@ -26,11 +26,10 @@
 					<i class="el-icon-sort"></i>
 					<span>Diario del Istmo</span>
 				</el-menu-item>
-				
 			</el-menu>
 		</el-col>
 		<el-col :span="18">
-				<data-table :news="news" :loading="loading"></data-table>
+				<data-table :news="news" :loading="loading" :overload="overload"></data-table>
 		</el-col>
 	</el-row>
 	
@@ -41,7 +40,8 @@
 		data(){
 			return{
 				news:[],
-				loading:true
+				loading:true,
+				overload:false
 
 			}
 			
