@@ -61,10 +61,12 @@ class NeoPoliticaTV_Control {
 		add_action('admin_menu', array($this, 'nptv_build_menu'));
 
 		add_action('admin_enqueue_scripts', array( $this, 'enqueue_scripts'));
-
+        // URL Importer Ajax Call
         add_action('wp_ajax_nptv_add_new', array( $this, 'ajax_add_post'));
-
+        //Automatic Feed List Ajax Call
         add_action('wp_ajax_nptv_get_list', array($this, '_get_list'));
+        //Automatic Add Sideload news ajax call
+        add_action('wp_ajax_nptv_update_new', array($this, 'ajax_update_post'));
 
 
 	} //End Constructor
@@ -86,6 +88,22 @@ class NeoPoliticaTV_Control {
         $cat = $_POST['cat'];
         $news = get_news($cat);
         $this->_ajax_return($news);
+    }
+
+    function ajax_update_post(){
+        $titulo = $_POST['titulo'];
+        $imagen = $_POST['imagen'];
+        $texto = $_POST['texto'];
+        $cat_id = $_POST['cat'];
+        $tags = $_POST['tags'];
+        $return = array(
+            'titulo' => $titulo,
+            'imagen' => $imagen,
+            'texto' => $texto,
+            'cat' => $cat_id,
+            'tags' => $tags
+        );
+        $this->_ajax_return($return);
     }
 
 

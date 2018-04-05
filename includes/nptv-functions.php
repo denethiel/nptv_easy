@@ -118,6 +118,53 @@ function _get_news_data($url){
 	
 }
 
+function add_new($titulo, $imagen, $texto, $cat_id, $tags){
+	$user_id = get_current_user_id();
+	$post = array(
+					'post_title' => $titulo,
+					'post_content' => $texto,
+					'post_status' => 'publish',
+					'post_author' => $user_id,
+					'post_category' => array($cat_id),
+					'tags_input' => $tags
+				);
+	$post_id = wp_insert_post($post);
+	$tmp = download_url( $imagen, 500 );
+	$desc = "Imagen-" . date('F.m.d.y.H.i.s') . "";
+	$file_array = array();
+	preg_match('/[^\?]+\.(jpg|jpe|jpeg|gif|png)/i', $imagen, $matches);
+	$file_array['name'] = basename($matches[0]);
+	$file_array['tmp_name'] = $tmp;
+	// If error storing temporarily, unlink
+	if ( is_wp_error( $tmp ) ) {
+		@unlink($file_array['tmp_name']);
+		$file_array['tmp_name'] = '';
+	}
+
+	// do the validation and storage stuff
+	$id = media_handle_sideload( $file_array, $post_id, $desc );
+
+	// If error storing permanently, unlink
+	if ( is_wp_error($id) ) {
+		@unlink($file_array['tmp_name']);
+		return $id;
+	}
+	$src = wp_get_attachment_url( $id );
+	//var_dump($src);
+	set_post_thumbnail( $post_id, $id );
+	if(!is_wp_error($post_id)){
+		return array(
+			'error' => false,
+			'post_id' => $post_id
+		);
+	}else{
+		return array(
+			'error' => true,
+			'msg' => $post_id->get_error_message()
+		);
+	}
+}
+
 function agregar_noticia($url, $cat_id, $tags){
     	global $options;
     	if(url_check($url)){

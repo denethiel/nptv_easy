@@ -41,7 +41,8 @@
 			return{
 				news:[],
 				loading:true,
-				overload:false
+				overload:false,
+				cat:'nacional'
 
 			}
 			
@@ -64,15 +65,37 @@
 				axios.post(NPTV.ajax_url, Qs.stringify(data))
 		        .then(function(response){
 		          console.log(response)
-		          this.news = response.data
+		          this.news = response.data;
 		          this.loading = false;
+		          this.updateNews();
 		        }.bind(this))
 		        .catch(function(error){
 		          console.log(error);
 		          this.loading = false;
 		        })
 			},
+			updateNews(){
+				this.news.forEach(function(value, key){
+					let data = {
+						'action':'nptv_update_new',
+						'cat':this.cat,
+						'texto': value.texto,
+						'titulo': value.titulo,
+						'imagen': value.imagen,
+						'tags':'',
+					}
+					console.log(this.cat);
+					// axios.post(NPTV.ajax_url, Qs.stringify(data))
+					// 	.then(function(response){
+					// 		console.log(response)
+					// 	}.bind(this))
+					// 	.catch(function(error){
+					// 		console.log(error);
+					// 	})
+				})
+			},
 			handleOpen(key, keyPath){
+				this.cat = key;
 				this.getList(key);
 				console.log(key, keyPath);
 			},
