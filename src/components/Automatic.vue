@@ -64,27 +64,29 @@
 				}
 				axios.post(NPTV.ajax_url, Qs.stringify(data))
 		        .then(function(response){
-		          console.log(response)
+		          //console.log(response)
 		          this.news = response.data;
 		          this.loading = false;
-		          this.updateNews();
+		          this.updateNews(this.cat);
 		        }.bind(this))
 		        .catch(function(error){
 		          console.log(error);
 		          this.loading = false;
 		        })
 			},
-			updateNews(){
+			updateNews(currentCat){
+
 				this.news.forEach(function(value, key){
 					let data = {
 						'action':'nptv_update_new',
-						'cat':this.cat,
+						'cat':currentCat,
 						'texto': value.texto,
 						'titulo': value.titulo,
 						'imagen': value.imagen,
 						'tags':'',
 					}
-					console.log(this.cat);
+					console.log(data);
+					
 					// axios.post(NPTV.ajax_url, Qs.stringify(data))
 					// 	.then(function(response){
 					// 		console.log(response)
@@ -97,10 +99,10 @@
 			handleOpen(key, keyPath){
 				this.cat = key;
 				this.getList(key);
-				console.log(key, keyPath);
+				//console.log(key, keyPath);
 			},
 			handleClose(key, keyPath){
-				console.log(key, keyPath);
+				//console.log(key, keyPath);
 			}
 		},
 		components:{
